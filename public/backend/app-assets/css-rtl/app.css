@@ -1,0 +1,6 @@
+@import url('bootstrap-extended.css');
+@import url('colors.css');
+@import url('components.css');
+html,body {
+    overflow-x:hidden !important;
+}
