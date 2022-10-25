@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WebhookController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,62 +18,27 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Auth::routes();
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('userlogout');
+// Route::get('/subscribe', [App\Http\Controllers\HomeController::class, 'subscribe'])->name('subscribe');
+// Route::get('/login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-Route::middleware(['auth:sanctum', 'verified', 'nonPayingCustomer'])->get('/subscribe', function () {
+Route::middleware(['auth:sanctum', 'verified'])->get('/subscribe', function () {
     return view('subscribe', [
         'intent' => auth()->user()->createSetupIntent(),
     ]);
 })->name('subscribe');
 
-Route::middleware(['auth:sanctum', 'verified', 'nonPayingCustomer'])->post('/subscribe', function (Request $request) {
+Route::middleware(['auth:sanctum', 'verified'])->post('/subscribe', function (Request $request) {
     // dd($request->all());
     auth()->user()->newSubscription('cashier', $request->plan)->create($request->paymentMethod);
 
     return redirect('/dashboard');
 })->name('subscribe.post');
 
-Route::middleware(['auth:sanctum', 'verified', 'payingCustomer'])->get('/members', function () {
-    return view('members');
-})->name('members');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/charge', function () {
-    return view('charge');
-})->name('charge');
 
-Route::middleware(['auth:sanctum', 'verified'])->post('/charge', function (Request $request) {
-    // dd($request->all());
-    // auth()->user()->charge(1000, $request->paymentMethod);
-    auth()->user()->createAsStripeCustomer();
-    auth()->user()->updateDefaultPaymentMethod($request->paymentMethod);
-    auth()->user()->invoiceFor('One Time Fee', 1500);
-
-    return redirect('/dashboard');
-})->name('charge.post');
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/invoices', function () {
-    return view('invoices', [
-        'invoices' => auth()->user()->invoices(),
-    ]);
-})->name('invoices');
-
-Route::get('user/invoice/{invoice}', function (Request $request, $invoiceId) {
-    return $request->user()->downloadInvoice($invoiceId, [
-        'vendor' => 'Your Company',
-        'product' => 'Your Product',
-    ]);
-});
-
-Route::post(
-    'stripe/webhook',
-    [WebhookController::class, 'handleWebhook']
-);
-Route::get('/clearcache', function() {
-    Artisan::call('cache:clear');
-    Artisan::call('config:clear');
-    Artisan::call('config:cache');
-    Artisan::call('view:clear');
-    return "Cleared!";
-});

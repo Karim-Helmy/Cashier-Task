@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin;
+use DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,7 +16,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+
         $this->call([
             AdminTableSeeder::class,
-        ]);    }
+        ]);
+    }
 }

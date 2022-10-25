@@ -6,6 +6,7 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 class AdminController extends Controller
@@ -166,6 +167,11 @@ class AdminController extends Controller
     public function user_delete($id){
      User::findOrFail($id)->delete();
      return back();
+    }
+    public function subscribers(){
+        $subscribers = DB::table('subscriptions')->get();
+        // dd($subscribers);
+        return view('admin.users.subscribers',compact('subscribers'));
     }
 
 }

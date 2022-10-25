@@ -16,11 +16,14 @@ class Admin
      */
     public function handle(Request $request, Closure $next , $guard = null)
     {
-        if (!Auth::guard($guard)->check()) {
-            return redirect('/admin/login');
+        if (Auth::guard('admin')->user()) {
+            return $next($request);
         }
-
-        return $next($request);
+        if ($request->ajax() || $request->wantsJson()) {
+            return response('Unauthorized.', 401);
+        } else {
+            return redirect(route('adminLogin'));
+        }
 
 
     }

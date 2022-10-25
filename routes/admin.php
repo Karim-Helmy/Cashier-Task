@@ -10,6 +10,7 @@ Route::group(['namespace'=>'admin'], function () {
         Route::get('/', 'AdminController@index')->name('dashboard');
         Route::get('/logout', 'AdminController@logout')->name('logout');
         Route::get('/users', 'AdminController@users')->name('users');
+        Route::get('/subscribers', 'AdminController@subscribers')->name('subscribers');
         Route::get('/users/edit/{id}', 'AdminController@user_edit')->name('users.edit');
         Route::post('/users/update/{id}', 'AdminController@user_update')->name('users.update');
         Route::get('/users/delete/{id}', 'AdminController@user_delete')->name('users.delete');
